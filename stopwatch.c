@@ -19,7 +19,13 @@ void stopwatchshow(void) //显示部分
 		stopwatch_running = !  stopwatch_running;
 		KeyNum = 0;
 	}
-	
+	if(KeyNum==3)  //重置计时
+	{
+		stopwatch_running = 0; //停止计时
+		stopwatch_time = 0; //秒数清零
+		stopwatch_ms = 0; //毫秒清零
+		KeyNum = 0;
+	}
 	minute = stopwatch_time / 60;
 	second = stopwatch_time % 60;
 	
@@ -44,4 +50,5 @@ void stopwatch_timer_handler(void) //时间处理
 			}
 		}
 	}
+
 }
