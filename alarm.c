@@ -43,6 +43,7 @@ void alarmRing() //时钟触发响铃（依赖于主函数循环）
             if(beepState)
             {
                 // 停止蜂鸣（具体实现取决于Beep函数）
+                Beep(0);
                 beepState = 0;
             }
         }
@@ -155,4 +156,5 @@ void alarmset() //时钟设置
         else
             LCD_ShowString(2, 8, "OFF");
     }
+
 }
