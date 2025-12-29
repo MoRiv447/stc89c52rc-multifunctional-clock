@@ -185,6 +185,13 @@ void main()
 	while(1)
 	{
 		KeyNum=Key();
+		if(alarmRinging && KeyNum != 0)
+		{
+			alarmRinging = 0; // 清除响铃标志
+            // 在alarmcheck里加了alarmHandled
+            // 只要还在这一秒内，alarmcheck就不会再次把alarmRinging置为1
+			KeyNum = 0;       // 消耗掉按键，不进行后续操作
+		}
 		if(KeyNum==1)
 		{
 			if(mode==0)
@@ -265,4 +272,5 @@ void Timer0_Routine() interrupt 1 //计时器中断
 	
 	stopwatch_timer_handler();
 	countdown_timer_handler();
+
 }
