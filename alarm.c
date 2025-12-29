@@ -7,6 +7,7 @@
 // 定义静态变量用于非阻塞延时
 static unsigned int ringCounter = 0; //计数器
 static bit beepState = 0; //蜂鸣器状态
+static bit alarmHandled = 0;
 
 void alarmcheck() //检查时钟是否触发
 {
@@ -19,7 +20,12 @@ void alarmcheck() //检查时钟是否触发
             alarmRinging = 1; // 触发闹钟
             ringCounter = 0;  // 重置计数器
             beepState = 0;    // 重置蜂鸣器状态
+						alarmHandled = 1;
         }
+    }
+		 else
+    {
+        alarmHandled = 0;
     }
 }
 
@@ -158,3 +164,4 @@ void alarmset() //时钟设置
     }
 
 }
+
