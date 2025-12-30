@@ -11,16 +11,16 @@ static bit alarmHandled = 0;
 
 void alarmcheck() //检查时钟是否触发
 {
-    if(alarmEnable && !alarmRinging) //闹钟开启且未响铃
-    {
-        if(DS1302_time[3] == alarmHour && 
+    if(DS1302_time[3] == alarmHour && 
            DS1302_time[4] == alarmMinute && 
-           DS1302_time[5] == alarmSecond)
+           DS1302_time[5] == alarmSecond) //闹钟开启且未响铃
+    {
+        if(alarmEnable && !alarmRinging && !alarmHandled)
         {
             alarmRinging = 1; // 触发闹钟
             ringCounter = 0;  // 重置计数器
             beepState = 0;    // 重置蜂鸣器状态
-						alarmHandled = 1;
+			alarmHandled = 1;
         }
     }
 		 else
@@ -29,43 +29,32 @@ void alarmcheck() //检查时钟是否触发
     }
 }
 
-void alarmRing() //时钟触发响铃（依赖于主函数循环）
+void alarmRing() 
 {
-    if(alarmRinging) //闹钟响铃
+    if(alarmRinging) //闹钟正在响
     {
         ringCounter++;
         
-        // 非阻塞延时：500ms蜂鸣，500ms静音
-        if(ringCounter < 500)  // 前500ms响铃
+        // 500ms响，500ms停
+        if(ringCounter < 500) 
         {
-            if(!beepState)
-            {
-                Beep(1);      // 短时间蜂鸣
-                beepState = 1;
-            }
+            if(!beepState) { Beep(1); beepState = 1; }
         }
-        else if(ringCounter < 1000) // 后500ms静音
+        else if(ringCounter < 1000) 
         {
-            if(beepState)
-            {
-                // 停止蜂鸣（具体实现取决于Beep函数）
-                Beep(0);
-                beepState = 0;
-            }
+            if(beepState) { P2_3 = 1; beepState = 0; } // 间歇静音时强制拉高
         }
         else
         {
-            ringCounter = 0;  // 重置计数器，重新开始周期
+            ringCounter = 0; 
         }
-        
-        // 检查是否有按键按下停止闹钟
-        if(KeyNum != 0) 
-        {
-            alarmRinging = 0;
-            ringCounter = 0;
-            beepState = 0;
-            KeyNum = 0;
-        }
+    }
+    else //闹钟没响
+    {
+        // 强制复位硬件状态，防止引脚卡在低电平一直响
+        ringCounter = 0;
+        beepState = 0;
+        P2_3 = 1; //强制拉高引脚，彻底关闭蜂鸣器
     }
 }
 
@@ -164,4 +153,5 @@ void alarmset() //时钟设置
     }
 
 }
+
 
