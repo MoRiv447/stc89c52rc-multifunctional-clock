@@ -238,10 +238,17 @@ void main()
 			}
 			KeyNum = 0;
 		}
+		if(mode != 1 && mode != 2)
+		{
+			DS1302_readtime(); // 在这里读时间，确保任何界面下时间都是新的
+			alarmcheck();      // 检查闹钟
+		}
 		
+		// 全局响铃逻辑：负责响，也负责静音
+		alarmRing();
 		switch (mode)
 		{
-			case 0:timeshow();alarmcheck();alarmRing();break; //时间显示；闹钟准备
+			case 0:timeshow();break; //时间显示；闹钟准备
 			case 1:timeset();break; //时间设置
 			case 2:alarmset();break; //闹钟设置
 			case 3:dht11show();break; //温湿度显示
@@ -274,3 +281,4 @@ void Timer0_Routine() interrupt 1 //计时器中断
 	countdown_timer_handler();
 
 }
+
